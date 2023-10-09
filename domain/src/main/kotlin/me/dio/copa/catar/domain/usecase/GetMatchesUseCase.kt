@@ -13,4 +13,5 @@ class GetMatchesUseCase @Inject constructor(
     {
         return repository.getMatches()
     }
+
 }
