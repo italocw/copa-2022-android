@@ -1,6 +1,7 @@
 package me.dio.copa.catar.features
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -32,8 +33,9 @@ import me.dio.copa.catar.domain.model.MatchDomain
 import me.dio.copa.catar.domain.model.TeamDomain
 import me.dio.copa.catar.ui.theme.Shapes
 
+typealias  NotificationOnClick = (match:MatchDomain) -> Unit
 @Composable
-fun MainScreen(matches: List<MatchDomain>) {
+fun MainScreen(matches: List<MatchDomain>, onNotificationClick: NotificationOnClick) {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -41,7 +43,7 @@ fun MainScreen(matches: List<MatchDomain>) {
     ) {
         LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
             items(matches) { match ->
-                MatchInfo(match)
+                MatchInfo(match, onNotificationClick)
             }
         }
     }
@@ -49,7 +51,7 @@ fun MainScreen(matches: List<MatchDomain>) {
 
 
 @Composable
-fun MatchInfo(match: MatchDomain) {
+fun MatchInfo(match: MatchDomain, onNotificationClick:NotificationOnClick) {
     val contentDescription = stringResource(id = R.string.stadium_image)
     Card(shape = Shapes.large, modifier = Modifier.fillMaxWidth()) {
         Box {
@@ -62,7 +64,7 @@ fun MatchInfo(match: MatchDomain) {
         }
 
         Column(modifier = Modifier.padding(16.dp)) {
-            Notification(match)
+            Notification(match,onNotificationClick )
             Title(match)
             Teams(match)
         }
@@ -70,7 +72,7 @@ fun MatchInfo(match: MatchDomain) {
 }
 
 @Composable
-fun Notification(match: MatchDomain) {
+fun Notification(match: MatchDomain, onClick:NotificationOnClick) {
     var contentDescriptionId: Int
     var drawableId: Int
     if (match.notificationEnabled) {
@@ -84,6 +86,7 @@ fun Notification(match: MatchDomain) {
     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
 
         Image(
+            modifier = Modifier.clickable { onClick(match) },
             painter = painterResource(id = drawableId),
             contentDescription = stringResource(id = contentDescriptionId)
         )
